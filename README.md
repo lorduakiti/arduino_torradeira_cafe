@@ -4,10 +4,10 @@
 Desenvolver um módulo de controle temporizado para torrifação de café.
 
 
-**Esquema Elétrico:**
-[Link](/Projeto Euler 2022.brd) 
+**Esquema Elétrico:**  
+[Link](/Projeto%20Euler%202022.brd)  
 
-![Esquema Elétrico](/Projeto Euler 2022.png) 
+![Esquema Elétrico](/Projeto%20Euler%202022.png) 
 
 
 # Colaboradores
