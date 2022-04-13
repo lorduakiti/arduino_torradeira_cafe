@@ -1,7 +1,7 @@
 # Projeto de Automatização de Torradeira de Café
 
 **Objetivos:**  
-Desenvolver um módulo de controle temporizado para torrifação de café.
+Desenvolver um módulo de controle temporizado para torrefação de café.
 
 
 **Esquema Elétrico:**  
