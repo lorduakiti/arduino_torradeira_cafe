@@ -43,16 +43,15 @@
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
 
-//const int pinoPOT = A5; //PINO ANALÓGICO UTILIZADO PELO POTENCIÔMETRO
-//const int pinoLED = 10; //PINO DIGITAL UTILIZADO PELO LED
-//const int pinoLED2 = 9; //PINO DIGITAL UTILIZADO PELO LED 2
-
-//float luminosidadeLED = 0; //VARIÁVEL QUE ARMAZENA O VALOR DA LUMINOSIDADE QUE SERÁ APLICADA AO LED
 float timer_aux = 0;
+float maxTimer = 0;
+unsigned long millisTimer1 = millis();
 
 int flagStart = 0;
 int buttonState = 0;
 const int pinoBTN = 8; 
+const int pinoMOTOR = 12; 
+const int pinoLED_STATUS = LED_BUILTIN;  // LED_BUILTIN: 13
 
 void setup() {
   Serial.begin(9600);
@@ -61,56 +60,23 @@ void setup() {
   lcd.begin(0, 0);  // set up the LCD's number of columns and rows:
   lcd.print("Timer - OFF"); // Print a message to the LCD.
   
-  //pinMode(pinoLED2, OUTPUT);    // sets the digital pin 13 as output
-
-  //pinMode(pinoPOT, INPUT); //DEFINE O PINO COMO ENTRADA
-  //pinMode(pinoLED, OUTPUT); //DEFINE O PINO COMO SAÍDA
-  
-  
   pinMode(pinoBTN, INPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(pinoLED_STATUS, OUTPUT);
+  pinMode(pinoMOTOR, OUTPUT);
+  
+  maxTimer = 1000; // limite padrão (1000 miliseguntos = 1 segundo)
 
 }
 
 void loop() {
-  //// set the cursor to column 0, line 1
-  //// (note: line 1 is the second row, since counting begins with 0):
-  //lcd.setCursor(0, 1);
-  //// print the number of seconds since reset:
-  ////lcd.print(millis() / 1000);
-  //timer_aux = (millis() / 1000);
-  //lcd.print(timer_aux);
-  //Serial.print("Timer: ");
-  //Serial.println(timer_aux);
-  //// delay a bit
-  //delay(50);
-  
-  //------------------------------
-  //digitalWrite(pinoLED2, HIGH); // sets the digital pin 13 on
-  //delay(1000);            // wai for a second
-  //digitalWrite(pinoLED2, LOW);  // sets the digital pin 13 off
-  //delay(1000);            // waits for a second
-  ////Serial.print("HIGH: ");
-  ////Serial.println(HIGH);
 
-  //------------------------------
-  //luminosidadeLED = map(analogRead(pinoPOT), 0, 1023, 0, 255); //EXECUTA A FUNÇÃO "map" DE ACORDO COM OS PARÂMETROS PASSADOS
-  //analogWrite(pinoLED, luminosidadeLED); //APLICA AO LED O VALOR DE LUMINOSIDADE GERADO PELA FUNÇÃO "map"
-  
-  //Serial.print("Led: ");
-  //Serial.println(luminosidadeLED);
-  //lcd.print(luminosidadeLED);
-
-  //------------------------------
-  // read the state of the pushbutton value
   buttonState = digitalRead(pinoBTN);
-  // check if pushbutton is pressed.  if it is, the
-  // buttonState is HIGH
   //Serial.print("buttonState: ");
   //Serial.println(buttonState);
-  lcd.setCursor(0, 1);
+
+  lcd.setCursor(12, 0);
   lcd.print(buttonState);
-  lcd.setCursor(3, 1);
+  lcd.setCursor(14, 0);
   lcd.print(flagStart);
   if(flagStart == 0) {
     if (buttonState == HIGH) {
@@ -122,15 +88,48 @@ void loop() {
       desligaTimer();
       delay(10); // Delay que serve p/ o sinal não desligar imediatamente o timer
     } else {
+      timer();
     }
   }
   //delay(10); // Delay a little bit to improve simulation performance
 }
 
-void ligaTimer(){
-  // turn LED on
-  digitalWrite(LED_BUILTIN, HIGH);
+void timer(){
+  long timerDiff = (millis() - millisTimer1);
+  
+  // Verifica se já passou 1000 milisegundos
+  if(timerDiff < maxTimer){    
+    //digitalWrite(8, HIGH);  // Acende o led do pino 8
+    //flagStart = 1;
+    //Serial.println("timer on");
+  }else{    
+    //digitalWrite(8, LOW);  // Apaga o led do pino 8
+    //flagStart = 0;    
+    Serial.println(">> timer off");
+    desligaTimer();
+  }
+  // Verifica se já passou 2000 milisegundos .. religamento!
+  //if(timerDiff > (maxTimer * 2)){
+  //  millisTimer1 = millis();
+  //}
+  
+  Serial.println(timerDiff);
+  //timer_aux = (timerDiff / 1000);
+  //Serial.println(timer_aux);
+  lcd.setCursor(0, 1);
+  //lcd.print(timer_aux); // print the number of seconds since reset:
+  lcd.print(timerDiff); 
+
+}
+
+void ligaTimer(){  
+  digitalWrite(pinoLED_STATUS, HIGH);  // turn LED on
+  digitalWrite(pinoMOTOR, HIGH);
+  
+  millisTimer1 = millis(); // reseta timer
+  maxTimer = 1000; // setando limite do timer (1000 miliseguntos = 1 segundo)
   flagStart = 1;
+  
   lcd.begin(0, 0);
   lcd.print("Timer - ON");
 
@@ -138,9 +137,11 @@ void ligaTimer(){
 }
 
 void desligaTimer(){
-  // turn LED off
-  digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(pinoLED_STATUS, LOW);  // turn LED off
+  digitalWrite(pinoMOTOR, LOW);
+  
   flagStart = 0;
+  
   lcd.begin(0, 0);
   lcd.print("Timer - OFF");
   
