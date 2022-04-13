@@ -1,12 +1,13 @@
 # Projeto de Automatização de Torradeira de Café
 
-**Objetivos:** 
+**Objetivos:**  
 Desenvolver um módulo de controle temporizado para torrifação de café.
 
 
 **Esquema Elétrico:**
-[Link](/Projeto Euler 2022.brd)
-![Esquema Elétrico](/Projeto Euler 2022.png)
+[Link](/Projeto Euler 2022.brd) 
+
+![Esquema Elétrico](/Projeto Euler 2022.png) 
 
 
 # Colaboradores
