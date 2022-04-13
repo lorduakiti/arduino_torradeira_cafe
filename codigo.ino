@@ -144,5 +144,5 @@ void desligaTimer(){
   lcd.begin(0, 0);
   lcd.print("Timer - OFF");
   
-  Serial.println---- end timer ----");
+  Serial.println("---- end timer ----");
 }
