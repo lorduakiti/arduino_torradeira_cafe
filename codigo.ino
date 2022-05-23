@@ -10,33 +10,49 @@ unsigned long millisTimer1 = millis();
 
 int flagStart = 0;
 int buttonState = 0;
-const int pinoBTN = 8; 
+int buttonStateAdd = 0;
+int buttonStateSub = 0;
+int buttonStatePlus = 0;
+const int pinoBTN_START = 11; 
+const int pinoBTN_ADD = 10; 
+const int pinoBTN_SUB = 9; 
+const int pinoBTN_PLUS = 8; 
 const int pinoMOTOR = 12; 
 const int pinoLED_STATUS = LED_BUILTIN;  // LED_BUILTIN: 13
 
 void setup() {
   Serial.begin(9600);
   Serial.println("Oi Euler");
+  delay(10);
   
   lcd.begin(16, 2); //Configuracoes LCD 16x2
   lcd.clear(); //apagando tela do monitor serial
   lcd.begin(0, 0);  // set up the LCD's number of columns and rows:
   lcd.print("Timer - OFF"); // Print a message to the LCD.
-  lcd.setCursor(0, 1);
-  lcd.print(0); 
-  //lcd.write('0');
+  delay(10);
 
-  pinMode(pinoBTN, INPUT);
+  pinMode(pinoBTN_START, INPUT);
+  pinMode(pinoBTN_ADD, INPUT);
+  pinMode(pinoBTN_SUB, INPUT);
+  pinMode(pinoBTN_PLUS, INPUT);
   pinMode(pinoLED_STATUS, OUTPUT);
   pinMode(pinoMOTOR, OUTPUT);
   
   maxTimer = 1000; // limite padrão (1000 miliseguntos = 1 segundo)
+  lcd.setCursor(0, 1);
+  lcd.print(0); 
+  //lcd.write('0');
+  delay(10);
+  lcd.print(maxTimer);
 
 }
 
 void loop() {
   
-  buttonState = digitalRead(pinoBTN);
+  buttonState = digitalRead(pinoBTN_START);
+  buttonStateAdd = digitalRead(pinoBTN_ADD);
+  buttonStateSub = digitalRead(pinoBTN_SUB);
+  buttonStatePlus = digitalRead(pinoBTN_PLUS);
   //Serial.print("buttonState: ");
   //Serial.println(buttonState);
 
@@ -48,6 +64,14 @@ void loop() {
     if (buttonState == HIGH) {
       ligaTimer();
       delay(10); // Delay que serve p/ o sinal não desligar imediatamente o timer
+    } else {
+      if (buttonStateAdd == HIGH) {
+        addTimer(maxTimer);
+      } else if (buttonStateSub == HIGH) {
+        subtractTimer(maxTimer);
+      } else if (buttonStatePlus == HIGH) {
+        mutiplieTimer(maxTimer);
+      }
     }
   } else {
     if (buttonState == HIGH) {
@@ -95,7 +119,7 @@ void ligaTimer(){
   digitalWrite(pinoMOTOR, HIGH);
   
   millisTimer1 = millis(); // reseta timer
-  maxTimer = 1000; // setando limite do timer (1000 miliseguntos = 1 segundo)
+  //maxTimer = 1000; // setando limite do timer (1000 miliseguntos = 1 segundo)
   flagStart = 1;
   
   lcd.begin(0, 0);
@@ -117,4 +141,26 @@ void desligaTimer(){
   lcd.print(timerDiff); 
   
   Serial.println("---- end timer ----");
+}
+
+
+
+void addTimer(float maxTimerAux){
+  maxTimer = maxTimerAux + 100;
+  lcd.setCursor(0, 1);
+  lcd.print(maxTimer);
+}
+
+
+void subtractTimer(float maxTimerAux){
+  maxTimer = maxTimerAux - 100;
+  lcd.setCursor(0, 1);
+  lcd.print(maxTimer);
+}
+
+
+void mutiplieTimer(float maxTimerAux){
+  maxTimer = maxTimerAux * 2;
+  lcd.setCursor(0, 1);
+  lcd.print(maxTimer);
 }
