@@ -22,6 +22,7 @@ const int pinoLED_STATUS = LED_BUILTIN;  // LED_BUILTIN: 13
 
 void setup() {
   Serial.begin(9600);
+  Serial.println("=========================================================");
   Serial.println("Oi Euler");
   delay(10);
   
@@ -44,6 +45,8 @@ void setup() {
   //lcd.write('0');
   delay(10);
   lcd.print(maxTimer);
+  Serial.println("---- default timer ----");
+  Serial.println(maxTimer);  
 
 }
 
@@ -63,20 +66,23 @@ void loop() {
   if(flagStart == 0) {
     if (buttonState == HIGH) {
       ligaTimer();
-      delay(10); // Delay que serve p/ o sinal não desligar imediatamente o timer
+      delay(100); // Delay que serve p/ o sinal não desligar imediatamente o timer
     } else {
       if (buttonStateAdd == HIGH) {
         addTimer(maxTimer);
+        delay(100); // Delay que serve p/ não duplicar o sinal
       } else if (buttonStateSub == HIGH) {
         subtractTimer(maxTimer);
+        delay(100); // Delay que serve p/ não duplicar o sinal
       } else if (buttonStatePlus == HIGH) {
-        mutiplieTimer(maxTimer);
+        multiplyTimer(maxTimer);
+        delay(100); // Delay que serve p/ não duplicar o sinal
       }
     }
   } else {
     if (buttonState == HIGH) {
       desligaTimer();
-      delay(10); // Delay que serve p/ o sinal não desligar imediatamente o timer
+      delay(100); // Delay que serve p/ o sinal não desligar imediatamente o timer
     } else {
       timer();
     }
@@ -126,6 +132,7 @@ void ligaTimer(){
   lcd.print("Timer - ON");
 
   Serial.println("---- start timer ----");
+  Serial.println(maxTimer);  
 }
 
 void desligaTimer(){
@@ -149,6 +156,8 @@ void addTimer(float maxTimerAux){
   maxTimer = maxTimerAux + 100;
   lcd.setCursor(0, 1);
   lcd.print(maxTimer);
+  Serial.println("---- add timer ----");
+  Serial.println(maxTimer);  
 }
 
 
@@ -156,11 +165,15 @@ void subtractTimer(float maxTimerAux){
   maxTimer = maxTimerAux - 100;
   lcd.setCursor(0, 1);
   lcd.print(maxTimer);
+  Serial.println("---- subtract timer ----");
+  Serial.println(maxTimer);  
 }
 
 
-void mutiplieTimer(float maxTimerAux){
+void multiplyTimer(float maxTimerAux){
   maxTimer = maxTimerAux * 2;
   lcd.setCursor(0, 1);
   lcd.print(maxTimer);
+  Serial.println("---- multiply timer ----");
+  Serial.println(maxTimer);  
 }
